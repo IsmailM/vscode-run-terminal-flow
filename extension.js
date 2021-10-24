@@ -18,19 +18,20 @@ function activate(context) {
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('vscode-run-terminal-flow.run', function () {
-		const editor = vscode.window.activeTextEditor;
-
-		vscode.commands.executeCommand('workbench.action.terminal.runSelectedText')
-		const position = editor.selection.active;
-    let newPosition = position.with(position.line + 1, 0);
-    editor.selection = new vscode.Selection(newPosition, newPosition);
+		return vscode.commands.executeCommand('workbench.action.terminal.runSelectedText')
+			.then((function () {
+				const editor = vscode.window.activeTextEditor;
+				const position = editor.selection.active;
+				let newPosition = position.with(position.line + 1, 0);
+				editor.selection = new vscode.Selection(newPosition, newPosition);
+				// return this.executeCommand('screencapture ' + path);
+			}).bind(this));
 	});
-
 	context.subscriptions.push(disposable);
 }
 
 // this method is called when your extension is deactivated
-function deactivate() {}
+function deactivate() { }
 
 module.exports = {
 	activate,
